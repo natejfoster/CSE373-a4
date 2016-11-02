@@ -1,7 +1,9 @@
 /**
- * @author (your name goes here)
+ * Nathan Foster, Govind Pillai
  *
  */
+
+import java.lang.Math;
 public class FeatureVector {
 
 	/**
@@ -32,14 +34,20 @@ public class FeatureVector {
 	 * 
 	 */
 	public FeatureVector(int bpp) {
+		bitsPerPixel = bpp;
 		keySpaceSize = 1 << bpp;
 		colorCounts = new long[keySpaceSize];
 	}
 
-	public void getTheCounts(ColorHashV1 ch) {
+	public void getTheCounts(ColorHash ch) {
 		// You should implement this method.
 		// It will go through all possible key values in order,
 		// get the count from the hash table and put it into this feature vector.
+		for (int i = 0; i < colorCounts.length; i++) {
+			ColorKey key = new ColorKey(i, bitsPerPixel);
+			ResponseItem ri = ch.colorHashGet(key);
+			colorCounts[i] = ri.value;
+		}
 	}
 	public double cosineSimilarity(FeatureVector other) {
 		// Implement this method. Use the formula given in the A3 spec,
@@ -52,8 +60,26 @@ public class FeatureVector {
 		// Hint: you may wish to write some private methods here to help
 		// computing the cosine similarity.  For example, it could be
 		// nice to have a dot product method and a vector magnitude method.
+		double dotProduct = getDotProduct(other.colorCounts);
+		double magnitudeProduct = this.getMagnitude() * other.getMagnitude();
 
-		return 1.0; // Change this to return the actual value.
+		return dotProduct / magnitudeProduct; // Change this to return the actual value.
+	}
+	
+	private double getDotProduct(long[] b) {
+		double sum = 0.0;
+		for (int i = 0; i < colorCounts.length; i++) {
+			sum += (double)(colorCounts[i]) * (double)(b[i]);
+		}
+		return sum;
+	}
+	
+	private double getMagnitude() {
+		double sumSquares = 0.0;
+		for (int i = 0; i < colorCounts.length; i++) {
+			sumSquares += (double)(colorCounts[i] * colorCounts[i]);
+		}
+		return Math.sqrt(sumSquares);
 	}
 
 	/**
@@ -61,7 +87,7 @@ public class FeatureVector {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }
