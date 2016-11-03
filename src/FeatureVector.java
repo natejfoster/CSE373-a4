@@ -39,16 +39,20 @@ public class FeatureVector {
 		colorCounts = new long[keySpaceSize];
 	}
 
-	public void getTheCounts(ColorHash ch) {
-		// You should implement this method.
+	// Goes through the key values of the ColorHash object passed in and computes the counts of each
+	// key.
+	public void getTheCounts(ColorHash ch) throws Exception {
 		// It will go through all possible key values in order,
 		// get the count from the hash table and put it into this feature vector.
 		for (int i = 0; i < colorCounts.length; i++) {
 			ColorKey key = new ColorKey(i, bitsPerPixel);
-			ResponseItem ri = ch.colorHashGet(key);
-			colorCounts[i] = ri.value;
+			if (ch.getCount(key) > 0) {
+				ResponseItem ri = ch.colorHashGet(key);
+				colorCounts[i] = ri.value;
+			}
 		}
 	}
+	// Computes the cosine Similarity between two vectors.
 	public double cosineSimilarity(FeatureVector other) {
 		// Implement this method. Use the formula given in the A3 spec,
 		// which is also explained at
@@ -56,16 +60,12 @@ public class FeatureVector {
 		// where A is this feature vector and B is the other feature vector.
 		// When multiplying in the dot product, convert all the long values
 		// to double before doing the multiplication.
-
-		// Hint: you may wish to write some private methods here to help
-		// computing the cosine similarity.  For example, it could be
-		// nice to have a dot product method and a vector magnitude method.
 		double dotProduct = getDotProduct(other.colorCounts);
 		double magnitudeProduct = this.getMagnitude() * other.getMagnitude();
-
-		return dotProduct / magnitudeProduct; // Change this to return the actual value.
+		return dotProduct / magnitudeProduct;
 	}
 	
+	// Computes the dot product of this vector and the passed in vector.
 	private double getDotProduct(long[] b) {
 		double sum = 0.0;
 		for (int i = 0; i < colorCounts.length; i++) {
@@ -74,20 +74,13 @@ public class FeatureVector {
 		return sum;
 	}
 	
+	// Computes the magnitude of the Feature Vector.
 	private double getMagnitude() {
 		double sumSquares = 0.0;
 		for (int i = 0; i < colorCounts.length; i++) {
 			sumSquares += (double)(colorCounts[i] * colorCounts[i]);
 		}
 		return Math.sqrt(sumSquares);
-	}
-
-	/**
-	 * Optional main method for your own tests of these methods.
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
