@@ -35,7 +35,7 @@ public class ComparePaintings {
 		return table;
 	}
 
-//	Starting with two hash tables of color counts, compute a measure of similarity based on the cosine distance of two vectors.
+	// Starting with two hash tables of color counts, compute a measure of similarity based on the cosine distance of two vectors.
 	double compare(ColorHash painting1, ColorHash painting2) throws Exception {
 		FeatureVector a = new FeatureVector(painting1.bitsPerPixel);
 		FeatureVector b = new FeatureVector(painting2.bitsPerPixel);
@@ -128,15 +128,15 @@ public class ComparePaintings {
 	// Private helper method to complete each column of the Collision Table.
 	private void completeCollisionColumn(Object[][] table, int column, String filename) {
 		int bpp = 24;
-			for (int i = 1; i <= 8; i++) {
-				countColors(filename, bpp);
-				table[i][column] = this.collisions;
-				bpp -= 3;
-			}
+		for (int i = 1; i <= 8; i++) {
+			countColors(filename, bpp);
+			table[i][column] = this.collisions;
+			bpp -= 3;
+		}
 	 }
 		
-// This simply checks that the images can be loaded, so you don't have 
-// an issue with missing files or bad paths.
+	// This simply checks that the images can be loaded, so you don't have 
+	// an issue with missing files or bad paths.
 	void imageLoadingTest() {
 		ImageLoader mona = new ImageLoader("MonaLisa.jpg");
 		ImageLoader starry = new ImageLoader("StarryNight.jpg");
