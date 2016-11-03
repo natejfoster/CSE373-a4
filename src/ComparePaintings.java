@@ -1,21 +1,41 @@
+import com.sun.javafx.tk.ImageLoader;
+
 /**
- * @author (your name goes here)
+ * Nathan Foster, Govind Pillai
  *
  */
 public class ComparePaintings {
 
-	public ComparePaintings(){}; // constructor.
+	private int collisions;
+	public ComparePaintings(){
+		collisions = 0;
+	}; // constructor.
 	
 	// Load the image, construct the hash table, count the colors.
-	ColorHashV1 countColors(String filename, int bitsPerPixel) {
+	ColorHash countColors(String filename, int bitsPerPixel) {
 		// Implement this.
-		return null; // Change this to return the real result.
+		ImageLoader img = new ImageLoader(filename);
+		ColorHash table = new ColorHash(3, bitsPerPixel, "Linear Probing", 0.5);
+		int width = img.getWidth();
+		int height = img.getHeight();
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				ResponseItem ri = table.colorHashPut(new ColorKey(i, j, bitsPerPixel));
+				collisions += ri.nCollisions;
+			}
+		}
+		return table; // Change this to return the real result.
 	}
 
 //	Starting with two hash tables of color counts, compute a measure of similarity based on the cosine distance of two vectors.
-	double compare(ColorHashV1 painting1, ColorHashV1 painting2) {
+	double compare(ColorHash painting1, ColorHash painting2) {
 		// Implement this.
-		return 1.0; // Change this to return the actual similarity value.
+		FeatureVector a = new FeatureVector(bitsPerPixel);
+		FeatureVector b = new FeatureVector(bitsPerPixel);
+		
+		a.getTheCounts(painting1);
+		b.getTheCounts(painting2);
+		return a.cosineSimilarity(b); // Change this to return the actual similarity value.
 	}
 
 	//	A basic test for the compare method: S(x,x) should be 1.0, so you should compute the similarity of an image with itself and print out the answer. If it comes out to be 1.0, that is a good sign for your implementation so far.
